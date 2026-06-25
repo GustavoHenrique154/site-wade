@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wade – Depoimentos & Parceiros</title>
+    <link rel="icon" type="image/png" href="assets/logo-wade-transparente.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:   #060D1F;
+    --navy2:  #0B1630;
+    --blue:   #1A3A8F;
+    --blue2:  #1E50C8;
+    --accent: #3B7BFF;
+    --sky:    #5B9BFF;
+    --white:  #FFFFFF;
+    --muted:  #8A9BBF;
+    --card:   #0F1E3D;
+    --border: rgba(59,123,255,.18);
+    --star:   #FFD166;
+    --tag-bg: rgba(59,123,255,.12);
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ── TOP BAR ── */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .btn-back {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--muted);
+    font-size: 13px; font-weight: 600;
+    padding: 9px 16px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color .2s, border-color .2s, background .2s;
+    font-family: inherit;
+  }
+  .btn-back:hover { color: var(--white); border-color: var(--accent); background: rgba(59,123,255,.08); }
+  .btn-back svg { width: 16px; height: 16px; }
+
+  /* ── TAB NAV ── */
+  .tab-nav {
+    display: flex;
+    gap: 4px;
+    background: var(--navy2);
+    padding: 6px;
+    border-radius: 14px;
+    max-width: 500px;
+    margin: 8px auto 0;
+    border: 1px solid var(--border);
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 11px 16px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .25s;
+    letter-spacing: .2px;
+    font-family: inherit;
+  }
+  .tab-btn.active {
+    background: var(--blue2);
+    color: var(--white);
+    box-shadow: 0 4px 16px rgba(30,80,200,.35);
+  }
+  .tab-btn:hover:not(.active) { color: var(--white); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── SECTION WRAPPER ── */
+  .section { padding: 48px 20px 72px; max-width: 900px; margin: 0 auto; }
+
+  .section-eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--tag-bg);
+    padding: 5px 14px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-size: clamp(26px, 5vw, 40px);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .section-title span { color: var(--accent); }
+  .section-sub {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+  .stat-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    flex: 1;
+    min-width: 140px;
+  }
+  .stat-icon { font-size: 22px; }
+  .stat-value { font-size: 22px; font-weight: 800; color: var(--white); }
+  .stat-label { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  /* ── FILTER PILLS ── */
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .pill {
+    padding: 7px 18px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    font-family: inherit;
+  }
+  .pill.active, .pill:hover {
+    background: var(--blue2);
+    color: var(--white);
+    border-color: var(--blue2);
+  }
+
+  /* ── TESTIMONIAL GRID ── */
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .testi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: transform .2s, box-shadow .2s, opacity .3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .testi-card.hidden { display: none; }
+  .testi-card::before {
+    content: '\201C';
+    position: absolute;
+    top: -10px; right: 18px;
+    font-size: 100px;
+    color: var(--accent);
+    opacity: .08;
+    font-family: Georgia, serif;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .testi-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(59,123,255,.12); }
+
+  .testi-stars { color: var(--star); font-size: 13px; margin-bottom: 12px; letter-spacing: 1px; }
+  .testi-text {
+    font-size: 13.5px;
+    color: #C8D5EE;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .testi-product {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--tag-bg);
+    padding: 3px 10px;
+    border-radius: 50px;
+    margin-bottom: 16px;
+  }
+  .testi-author { display: flex; align-items: center; gap: 12px; }
+  .testi-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700; color: var(--white);
+    flex-shrink: 0;
+  }
+  .testi-name { font-size: 14px; font-weight: 700; }
+  .testi-role { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .testi-name-row { display: flex; align-items: center; gap: 6px; }
+  .verified { color: var(--accent); font-size: 13px; }
+
+  /* empty state */
+  .empty-state {
+    display: none;
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* ── SHOW MORE ── */
+  .show-more-wrap { text-align: center; margin-top: 32px; }
+  .btn-show-more {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 10px;
+    padding: 12px 28px;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .2s;
+  }
+  .btn-show-more:hover { border-color: var(--accent); color: var(--white); }
+
+  /* ── CTA STRIP ── */
+  .testi-cta {
+    margin-top: 48px;
+    background: linear-gradient(135deg, #0F1E3D 0%, #142254 100%);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .testi-cta-text { font-size: 18px; font-weight: 700; }
+  .testi-cta-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--blue2);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    padding: 13px 26px;
+    font-size: 14px; font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background .2s, transform .15s;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent;
+    color: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color .2s, color .2s;
+    font-family: inherit;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ════════ PARCEIROS TAB ════════ */
+  .parceiro-hero {
+    background: linear-gradient(135deg, #050C1D 0%, #0A1840 60%, #0D2060 100%);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 52px 40px;
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    margin-bottom: 56px;
+    flex-wrap: wrap;
+    position: relative;
+    overflow: hidden;
+  }
+  .parceiro-hero::after {
+    content: '';
+    position: absolute;
+    right: -80px; top: -80px;
+    width: 360px; height: 360px;
+    background: radial-gradient(circle, rgba(59,123,255,.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .parceiro-hero-text { flex: 1; min-width: 240px; position: relative; z-index: 1; }
+  .parceiro-hero-text h2 { font-size: clamp(24px, 4vw, 36px); font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+  .parceiro-hero-text p { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; max-width: 400px; }
+  .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .parceiro-hero-stats { display: flex; gap: 24px; flex-wrap: wrap; position: relative; z-index: 1; }
+  .hero-stat { text-align: center; min-width: 90px; }
+  .hero-stat-val { font-size: 28px; font-weight: 900; color: var(--accent); }
+  .hero-stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 16px;
+    margin-bottom: 56px;
+  }
+  .benefit-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 20px;
+    transition: transform .2s;
+  }
+  .benefit-card:hover { transform: translateY(-3px); }
+  .benefit-icon {
+    width: 48px; height: 48px;
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+  .benefit-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .benefit-desc { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+
+  .steps-title { font-size: 22px; font-weight: 800; margin-bottom: 28px; }
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    margin-bottom: 56px;
+  }
+  .step {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 20px;
+    margin: 8px;
+  }
+  .step-num {
+    width: 36px; height: 36px;
+    background: var(--blue2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800;
+    margin-bottom: 16px;
+  }
+  .step-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .step-desc { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+
+  .mod-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+    margin-bottom: 56px;
+  }
+  .mod-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    transition: border-color .2s, transform .2s;
+    cursor: pointer;
+  }
+  .mod-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .mod-card.highlight { border-color: var(--blue2); background: linear-gradient(135deg, #0F1E3D 0%, #142254 100%); }
+  .mod-badge {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 50px;
+    margin-bottom: 16px;
+  }
+  .mod-badge.popular { background: rgba(255,209,102,.12); color: var(--star); border: 1px solid rgba(255,209,102,.25); }
+  .mod-badge.standard { background: var(--tag-bg); color: var(--accent); border: 1px solid var(--border); }
+  .mod-badge.pro { background: rgba(30,80,200,.18); color: #7BAAFF; border: 1px solid rgba(30,80,200,.3); }
+  .mod-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+  .mod-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+  .mod-perks { list-style: none; }
+  .mod-perks li {
+    font-size: 13px; color: #C8D5EE;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .mod-perks li:last-child { border-bottom: none; }
+  .mod-perks li::before { content: '\2713'; color: var(--accent); font-weight: 700; font-size: 12px; }
+
+  .form-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px 36px;
+  }
+  .form-title { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+  .form-sub { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-label { font-size: 12px; font-weight: 600; color: var(--muted); }
+  .form-control {
+    background: var(--navy2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--white);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .form-control:focus { border-color: var(--accent); }
+  .form-control::placeholder { color: var(--muted); }
+  select.form-control option { background: var(--navy2); }
+  .form-actions { margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .form-note { font-size: 11.5px; color: var(--muted); }
+
+  /* success toast */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: #16a34a; color: #fff;
+    padding: 14px 28px; border-radius: 12px;
+    font-size: 14px; font-weight: 600;
+    box-shadow: 0 8px 32px rgba(0,0,0,.4);
+    transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+    opacity: 0; pointer-events: none; z-index: 999;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0 0 48px; }
+
+  @media (max-width: 600px) {
+    .section { padding: 32px 16px 56px; }
+    .parceiro-hero { padding: 32px 22px; }
+    .testi-cta { padding: 28px 22px; }
+    .form-wrap { padding: 28px 20px; }
+    .tab-nav { margin: 8px 16px 0; }
+    .top-bar { padding: 14px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <button class="btn-back" onclick="goBack()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+    Voltar à página principal
+  </button> <a href="index.html"></a>
+</div>
+
+<!-- TAB NAVIGATION -->
+<nav class="tab-nav" role="tablist">
+  <button class="tab-btn active" id="btn-depoimentos" onclick="switchTab('depoimentos', this)" role="tab">💬 Depoimentos</button>
+  <button class="tab-btn" id="btn-parceiros" onclick="switchTab('parceiros', this)" role="tab">🤝 Trabalhe Conosco</button>
+</nav>
+
+<!-- ════════════ TAB 1 – DEPOIMENTOS ════════════ -->
+<div id="tab-depoimentos" class="tab-panel active">
+  <div class="section">
+
+    <span class="section-eyebrow">Histórias reais</span>
+    <h1 class="section-title">O que nossos clientes<br><span>dizem sobre a Wade</span></h1>
+    <p class="section-sub">Mais de 1.500 parceiros e consumidores já transformaram sua saúde, renda e estilo de vida com o Ecossistema Wade.</p>
+
+    <div class="stats-bar">
+      <div class="stat-chip"><span class="stat-icon">👥</span><div><div class="stat-value">1.500+</div><div class="stat-label">Clientes ativos</div></div></div>
+      <div class="stat-chip"><span class="stat-icon">⭐</span><div><div class="stat-value">4,9/5</div><div class="stat-label">Avaliação média</div></div></div>
+      <div class="stat-chip"><span class="stat-icon">📦</span><div><div class="stat-value">120k+</div><div class="stat-label">Produtos vendidos</div></div></div>
+      <div class="stat-chip"><span class="stat-icon">✅</span><div><div class="stat-value">98%</div><div class="stat-label">Entregues no prazo</div></div></div>
+    </div>
+
+    <div class="filter-row">
+      <button class="pill active" data-filter="todos">Todos</button>
+      <button class="pill" data-filter="befarm">BeFarm</button>
+      <button class="pill" data-filter="bluesafe">BlueSafe</button>
+      <button class="pill" data-filter="wadecare">Wade Care</button>
+      <button class="pill" data-filter="parceiro">Parceiros</button>
+    </div>
+
+    <div class="testi-grid" id="testi-grid">
+
+      <div class="testi-card" data-category="befarm">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-product">BeFarm</div>
+        <p class="testi-text">Os suplementos da BeFarm mudaram minha disposição em menos de 30 dias. Nunca me senti tão bem — indico para toda a família sem hesitar.</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#1A5276">AN</div>
+          <div><div class="testi-name-row"><span class="testi-name">Ana Nunes</span><span class="verified" title="Compra verificada">✔</span></div><div class="testi-role">Nutricionista · São Paulo, SP</div></div>
+        </div>
+      </div>
+
+      <div class="testi-card" data-category="bluesafe">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-product">BlueSafe</div>
+        <p class="testi-text">A linha BlueSafe é impressionante — zero irritação, cheiro suave e embalagem sustentável. Minha família inteira aderiu e não volta mais ao produto de supermercado.</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#1A3A8F">RM</div>
+          <div><div class="testi-name-row"><span class="testi-name">Rafael Melo</span><span class="verified" title="Compra verificada">✔</span></div><div class="testi-role">Empreendedor · Curitiba, PR</div></div>
+        </div>
+      </div>
+
+      <div class="testi-card" data-category="parceiro">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-product">Parceiro Wade</div>
+        <p class="testi-text">Me tornei parceira há 6 meses e já construí uma renda extra consistente. O suporte da equipe é excepcional e as ferramentas da plataforma facilitam tudo.</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#6B2F8A">JF</div>
+          <div><div class="testi-name-row"><span class="testi-name">Juliana Ferreira</span><span class="verified" title="Compra verificada">✔</span></div><div class="testi-role">Parceira Platinum · Florianópolis, SC</div></div>
+        </div>
+      </div>
+
+      <div class="testi-card" data-category="wadecare">
+        <div class="testi-stars">★★★★☆</div>
+        <div class="testi-product">Wade Care</div>
+        <p class="testi-text">Os produtos de cuidado pessoal são de altíssima qualidade. Entrega rápida, embalagem premium e o resultado aparece logo. Recomendo muito!</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#145A32">MS</div>
+          <div><div class="testi-name-row"><span class="testi-name">Marcos Silva</span><span class="verified" title="Compra verificada">✔</span></div><div class="testi-role">Personal Trainer · Belo Horizonte, MG</div></div>
+        </div>
+      </div>
+
+      <div class="testi-card" data-category="befarm">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-product">BeFarm</div>
+        <p class="testi-text">Comecei a usar os produtos BeFarm por indicação de uma amiga e fiquei surpresa com os resultados. Mais energia, foco e muito bem-estar geral no dia a dia.</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#7D3C98">LC</div>
+          <div><div class="testi-name-row"><span class="testi-name">Larissa Costa</span><span class="verified" title="Compra verificada">✔</span></div><div class="testi-role">Designer · Porto Alegre, RS</div></div>
+        </div>
+      </div>
+
+      <div class="testi-card" data-category="parceiro">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-product">Parceiro Wade</div>
+        <p class="testi-text">O ecossistema Wade é diferente de tudo que já vi no mercado. Capacitação de qualidade, produtos que se vendem sozinhos e comunidade forte. Vale cada centavo investido.</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#1A3A8F">GT</div>
+          <div><div class="testi-name-row"><span class="testi-name">Gabriel Torres</span><span class="verified" title="Compra verificada">✔</span></div><div class="testi-role">Parceiro Gold · Recife, PE</div></div>
+        </div>
+      </div>
+
+      <div class="testi-card" data-category="bluesafe">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-product">BlueSafe</div>
+        <p class="testi-text">Uso o kit limpeza BlueSafe há 4 meses e a diferença é real. Sem produto químico agressivo, ótimo resultado e preço justo. Minha casa nunca esteve tão limpa!</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#1A5276">CP</div>
+          <div><div class="testi-name-row"><span class="testi-name">Camila Pires</span><span class="verified" title="Compra verificada">✔</span></div><div class="testi-role">Professora · Goiânia, GO</div></div>
+        </div>
+      </div>
+
+      <div class="testi-card" data-category="wadecare">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-product">Wade Care</div>
+        <p class="testi-text">A linha de cuidados da Wade Care transformou minha rotina de skincare. Pele hidratada, toque leve e fórmula sem parabenos. Virei fã e já presenteei várias amigas.</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#922B21">FB</div>
+          <div><div class="testi-name-row"><span class="testi-name">Fernanda Braga</span><span class="verified" title="Compra verificada">✔</span></div><div class="testi-role">Esteticista · Santos, SP</div></div>
+        </div>
+      </div>
+
+      <div class="testi-card" data-category="parceiro">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-product">Parceiro Wade</div>
+        <p class="testi-text">Entrei como parceiro sem nenhuma experiência em vendas. Em 3 meses, com o treinamento da Wade, já batia minha meta mensal. O suporte faz toda a diferença.</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#0E6655">DO</div>
+          <div><div class="testi-name-row"><span class="testi-name">Diego Oliveira</span><span class="verified" title="Compra verificada">✔</span></div><div class="testi-role">Parceiro Silver · Manaus, AM</div></div>
+        </div>
+      </div>
+
+      <div class="testi-card" data-category="befarm">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-product">BeFarm</div>
+        <p class="testi-text">Como atleta, preciso de suplementos confiáveis. A BeFarm entrega qualidade com laudo laboratorial. Meu rendimento nos treinos melhorou visivelmente no primeiro mês.</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#1F618D">TR</div>
+          <div><div class="testi-name-row"><span class="testi-name">Thiago Rocha</span><span class="verified" title="Compra verificada">✔</span></div><div class="testi-role">Atleta · Campinas, SP</div></div>
+        </div>
+      </div>
+
+      <div class="testi-card" data-category="bluesafe">
+        <div class="testi-stars">★★★★☆</div>
+        <div class="testi-product">BlueSafe</div>
+        <p class="testi-text">Comprei o kit premium e chegou em 2 dias, embalagem super bem protegida. Os produtos são concentrados, duram muito mais que os de supermercado. Recomendo!</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#7B241C">PS</div>
+          <div><div class="testi-name-row"><span class="testi-name">Patricia Souza</span><span class="verified" title="Compra verificada">✔</span></div><div class="testi-role">Empreendedora · Brasília, DF</div></div>
+        </div>
+      </div>
+
+      <div class="testi-card" data-category="parceiro">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-product">Parceiro Wade</div>
+        <p class="testi-text">O que mais me impressionou foi a comunidade. São centenas de parceiros dispostos a ajudar. Aprendi mais em 1 mês aqui do que em anos tentando sozinha.</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#1A3A8F">BL</div>
+          <div><div class="testi-name-row"><span class="testi-name">Beatriz Lima</span><span class="verified" title="Compra verificada">✔</span></div><div class="testi-role">Parceira Gold · Fortaleza, CE</div></div>
+        </div>
+      </div>
+
+      <div class="empty-state" id="empty-state">Nenhum depoimento encontrado para este filtro.</div>
+
+    </div><!-- /testi-grid -->
+
+    <div class="show-more-wrap" id="show-more-wrap">
+      <button class="btn-show-more" id="btn-show-more" onclick="toggleShowMore()">Ver mais depoimentos ↓</button>
+    </div>
+
+    <!-- CTA strip -->
+    <div class="testi-cta">
+      <div>
+        <div class="testi-cta-text">Você também pode escrever sua história aqui.</div>
+        <div class="testi-cta-sub">Experimente os produtos Wade e compartilhe sua experiência.</div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="#" class="btn-primary">Conhecer produtos →</a>
+        <button class="btn-outline" onclick="switchTab('parceiros', document.getElementById('btn-parceiros'))">Sou parceiro</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════ TAB 2 – TRABALHE CONOSCO ════════════ -->
+<div id="tab-parceiros" class="tab-panel">
+  <div class="section">
+
+    <div class="parceiro-hero">
+      <div class="parceiro-hero-text">
+        <span class="section-eyebrow">Faça parte do Ecossistema</span>
+        <h2>Construa sua renda<br>com a <span style="color:var(--accent)">Wade</span></h2>
+        <p>Junte-se a mais de 1.500 parceiros que já estão transformando suas vidas com tecnologia, capacitação e produtos de alta demanda.</p>
+        <div class="hero-btns">
+          <a href="#form-parceiro" class="btn-primary" onclick="scrollToForm(event)">Quero ser parceiro →</a>
+          <a href="#como-funciona" class="btn-outline" onclick="scrollToSection(event,'como-funciona')">Como funciona</a>
+        </div>
+      </div>
+      <div class="parceiro-hero-stats">
+        <div class="hero-stat"><div class="hero-stat-val">1.5k+</div><div class="hero-stat-label">Parceiros ativos</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">R$8k</div><div class="hero-stat-label">Média mensal top</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">3</div><div class="hero-stat-label">Marcas no portfólio</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">98%</div><div class="hero-stat-label">Taxa de satisfação</div></div>
+      </div>
+    </div>
+
+    <span class="section-eyebrow">Por que a Wade?</span>
+    <h2 class="section-title" style="margin-bottom:12px;">Benefícios de ser <span>parceiro Wade</span></h2>
+    <p class="section-sub">Você não vende apenas produtos. Você oferece saúde, qualidade de vida e oportunidade de renda — com toda a estrutura da Wade por trás.</p>
+
+    <div class="benefits-grid">
+      <div class="benefit-card"><div class="benefit-icon">📱</div><div class="benefit-title">Plataforma de vendas</div><div class="benefit-desc">App completo com catálogo, pedidos, pagamentos e comissões em tempo real.</div></div>
+      <div class="benefit-card"><div class="benefit-icon">🎓</div><div class="benefit-title">Capacitação gratuita</div><div class="benefit-desc">Treinamentos, mentorias e materiais de vendas para acelerar seus resultados do dia 1.</div></div>
+      <div class="benefit-card"><div class="benefit-icon">💰</div><div class="benefit-title">Plano de comissões</div><div class="benefit-desc">Comissões atrativas por venda direta e bônus progressivos conforme sua rede cresce.</div></div>
+      <div class="benefit-card"><div class="benefit-icon">🚀</div><div class="benefit-title">3 marcas fortes</div><div class="benefit-desc">BeFarm, BlueSafe e Wade Care — portfólio diversificado para diferentes públicos.</div></div>
+      <div class="benefit-card"><div class="benefit-icon">🤝</div><div class="benefit-title">Suporte dedicado</div><div class="benefit-desc">Equipe de suporte ativa 7 dias por semana para apoiar suas vendas.</div></div>
+      <div class="benefit-card"><div class="benefit-icon">📦</div><div class="benefit-title">Logística eficiente</div><div class="benefit-desc">Estoque gerenciado pela Wade — você vende, nós entregamos. Sem preocupação com envio.</div></div>
+    </div>
+
+    <hr class="divider">
+
+    <div id="como-funciona">
+      <span class="section-eyebrow">Processo</span>
+      <div class="steps-title">Como se tornar parceiro</div>
+      <div class="steps-grid">
+        <div class="step"><div class="step-num">1</div><div class="step-title">Cadastro gratuito</div><div class="step-desc">Preencha o formulário abaixo. O processo leva menos de 3 minutos.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-title">Análise & aprovação</div><div class="step-desc">Nossa equipe avalia seu perfil e entra em contato em até 24 horas úteis.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-title">Acesso à plataforma</div><div class="step-desc">Você recebe login no app, materiais de treinamento e kit de boas-vindas digital.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-title">Comece a vender</div><div class="step-desc">Compartilhe seu link personalizado, acompanhe pedidos e receba suas comissões.</div></div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <span class="section-eyebrow">Modalidades</span>
+    <h2 class="section-title" style="margin-bottom:12px;">Escolha como quer <span>atuar</span></h2>
+    <p class="section-sub">Seja para renda extra ou dedicação integral, temos o modelo certo para você.</p>
+
+    <div class="mod-grid">
+      <div class="mod-card" onclick="selectMod(this,'afiliado')">
+        <span class="mod-badge standard">Iniciante</span>
+        <div class="mod-title">Afiliado</div>
+        <div class="mod-desc">Ideal para quem está começando e quer testar o mercado sem grandes compromissos.</div>
+        <ul class="mod-perks"><li>Acesso ao catálogo completo</li><li>Comissão por venda direta</li><li>Treinamento introdutório</li><li>Suporte por WhatsApp</li></ul>
+      </div>
+      <div class="mod-card highlight" onclick="selectMod(this,'parceiro')">
+        <span class="mod-badge popular">⭐ Mais popular</span>
+        <div class="mod-title">Parceiro</div>
+        <div class="mod-desc">Para quem quer construir uma rede e multiplicar seus ganhos com bônus de equipe.</div>
+        <ul class="mod-perks"><li>Tudo do plano Afiliado</li><li>Bônus de rede e recrutamento</li><li>Mentoria individual mensal</li><li>Materiais de marketing</li><li>Acesso ao app Wade Pro</li></ul>
+      </div>
+      <div class="mod-card" onclick="selectMod(this,'lider')">
+        <span class="mod-badge pro">Elite</span>
+        <div class="mod-title">Líder Wade</div>
+        <div class="mod-desc">Para líderes que querem escalar com suporte prioritário e comissões máximas.</div>
+        <ul class="mod-perks"><li>Tudo do plano Parceiro</li><li>Comissões premium</li><li>Eventos e viagens exclusivas</li><li>Gerente de conta dedicado</li><li>Co-branding permitido</li></ul>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div id="form-parceiro" class="form-wrap">
+      <div class="form-title">Quero fazer parte do Ecossistema Wade</div>
+      <div class="form-sub">Preencha seus dados e entraremos em contato em até 24 horas.</div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Nome completo</label><input type="text" class="form-control" placeholder="Seu nome" id="f-nome"></div>
+        <div class="form-group"><label class="form-label">WhatsApp</label><input type="tel" class="form-control" placeholder="(00) 00000-0000" id="f-wpp"></div>
+        <div class="form-group"><label class="form-label">E-mail</label><input type="email" class="form-control" placeholder="seu@email.com" id="f-email"></div>
+        <div class="form-group"><label class="form-label">Cidade / Estado</label><input type="text" class="form-control" placeholder="Ex: São Paulo, SP" id="f-cidade"></div>
+        <div class="form-group">
+          <label class="form-label">Modalidade de interesse</label>
+          <select class="form-control" id="f-modalidade">
+            <option value="" disabled selected>Selecione...</option>
+            <option value="afiliado">Afiliado</option>
+            <option value="parceiro">Parceiro</option>
+            <option value="lider">Líder Wade</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Experiência com vendas</label>
+          <select class="form-control" id="f-exp">
+            <option value="" disabled selected>Selecione...</option>
+            <option>Nenhuma</option>
+            <option>Menos de 1 ano</option>
+            <option>1 a 3 anos</option>
+            <option>Mais de 3 anos</option>
+          </select>
+        </div>
+        <div class="form-group full"><label class="form-label">Como nos conheceu?</label><input type="text" class="form-control" placeholder="Instagram, indicação, evento..." id="f-origem"></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-primary" id="submit-btn" onclick="handleSubmit()">Enviar cadastro →</button>
+        <span class="form-note">🔒 Seus dados estão seguros. Sem spam.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">✔ Cadastro enviado! Entraremos em contato em breve.</div>
+
+<script>
+  // ── TABS ──
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── BACK ──
+  function goBack() {
+    if (history.length > 1) {
+      history.back();
+    } else {
+      // fallback: vai para raiz ou exibe aviso
+      alert('Redirecionando para a página principal...');
+      // window.location.href = '/'; // descomente e ajuste conforme sua URL
+    }
+  }
+
+  // ── FILTER (com contagem visível) ──
+  const INITIAL_VISIBLE = 6;
+  let currentFilter = 'todos';
+  let showAll = false;
+
+  function applyFilter(filter) {
+    currentFilter = filter;
+    showAll = false;
+    renderCards();
+  }
+
+  function renderCards() {
+    const cards = Array.from(document.querySelectorAll('.testi-card[data-category]'));
+    const matching = cards.filter(c => currentFilter === 'todos' || c.dataset.category === currentFilter);
+    const nonMatching = cards.filter(c => currentFilter !== 'todos' && c.dataset.category !== currentFilter);
+
+    // hide non-matching
+    nonMatching.forEach(c => c.classList.add('hidden'));
+
+    // show/hide matching based on showAll
+    matching.forEach((c, i) => {
+      c.classList.remove('hidden');
+      if (!showAll && i >= INITIAL_VISIBLE) c.classList.add('hidden');
+    });
+
+    // empty state
+    const empty = document.getElementById('empty-state');
+    empty.style.display = matching.length === 0 ? 'block' : 'none';
+
+    // show-more button
+    const wrap = document.getElementById('show-more-wrap');
+    const btn = document.getElementById('btn-show-more');
+    if (matching.length > INITIAL_VISIBLE) {
+      wrap.style.display = 'block';
+      btn.textContent = showAll ? 'Ver menos ↑' : `Ver mais ${matching.length - INITIAL_VISIBLE} depoimentos ↓`;
+    } else {
+      wrap.style.display = 'none';
+    }
+  }
+
+  function toggleShowMore() {
+    showAll = !showAll;
+    renderCards();
+  }
+
+  // pill clicks
+  document.querySelectorAll('.pill').forEach(pill => {
+    pill.addEventListener('click', function () {
+      document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+      applyFilter(this.dataset.filter);
+    });
+  });
+
+  // init
+  renderCards();
+
+  // ── MODAL SELECTION ──
+  function selectMod(card, val) {
+    document.querySelectorAll('.mod-card').forEach(c => c.style.outline = 'none');
+    card.style.outline = '2px solid var(--accent)';
+    const sel = document.getElementById('f-modalidade');
+    sel.value = val;
+    scrollToForm();
+  }
+
+  function scrollToForm(e) {
+    if (e) e.preventDefault();
+    setTimeout(() => {
+      document.getElementById('form-parceiro').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  }
+
+  function scrollToSection(e, id) {
+    if (e) e.preventDefault();
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── FORM SUBMIT ──
+  function handleSubmit() {
+    const nome = document.getElementById('f-nome').value.trim();
+    const wpp  = document.getElementById('f-wpp').value.trim();
+    const email= document.getElementById('f-email').value.trim();
+
+    if (!nome || !wpp || !email) {
+      // shake the empty fields
+      [['f-nome', nome], ['f-wpp', wpp], ['f-email', email]].forEach(([id, val]) => {
+        if (!val) {
+          const el = document.getElementById(id);
+          el.style.borderColor = '#e74c3c';
+          el.focus();
+          setTimeout(() => el.style.borderColor = '', 2000);
+        }
+      });
+      return;
+    }
+
+    const btn = document.getElementById('submit-btn');
+    btn.textContent = 'Enviando...';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      btn.textContent = '✔ Enviado com sucesso!';
+      btn.style.background = '#16a34a';
+      showToast();
+    }, 900);
+  }
+
+  function showToast() {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 4000);
+  }
+</script>
+</body>
+</html>
